@@ -13,15 +13,15 @@ const Slider = () => {
       const nextSlide =
         currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
       setcurrentSlide(nextSlide);
-
-      return () => {
-        clearInterval(sliding);
-      };
     }, 3000);
+
+    return () => {
+      clearInterval(sliding);
+    };
   }, [currentSlide]);
 
   return (
-    <div className="h-full flex flex-col lg:flex-row border-2 overflow-hidden">
+    <div className="h-full flex flex-col lg:flex-row overflow-hidden">
       <div
         className="w-max h-full flex transition-all ease-in-out duration-1000"
         style={{ transform: `translateX(-${currentSlide * 100}vw)` }}
