@@ -14,7 +14,7 @@ const Button = ({
     <Link
       href={link}
       className={`${
-        dark ? "text-white bg-black border-white" : "text-black bg-white"
+        dark ? "text-white bg-black border-black" : "text-black bg-white"
       } border-[2px] rounded-md px-3 py-2 font-semibold hover:bg-blue-600 hover:border-blue-600 hover:text-white transition-colors duration-300`}
     >
       {name}
