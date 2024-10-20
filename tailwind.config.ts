@@ -18,6 +18,13 @@ const config: Config = {
       }
     },
   },
+  safelist: [
+    "from-slate-50",
+    "bg-slate-300",
+    "bg-orange-100",
+    "to-blue-300",
+    "bg-gradient-to-r",
+  ],
   plugins: [],
 };
 export default config;
