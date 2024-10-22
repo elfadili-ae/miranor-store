@@ -65,5 +65,57 @@ export const slides = [
         url: "/",
         bg: "bg-orange-100",
     },
+];
 
+export const FooterCategories = [
+    {
+        link: "/products&sort=new",
+        name: "New Arriavals",
+    },
+    {
+        link: "/products&cat=women",
+        name: "Women",
+    },
+    {
+        link: "/products&cat=men",
+        name: "Men",
+    },
+    {
+        link: "/products&cat=accessories",
+        name: "Accessories",
+    },
+    {
+        link: "/products",
+        name: "All Products",
+    },
+];
+
+export const FooterCompany = [
+    {
+        name: "About us",
+        link: "/about",
+    },
+    {
+        name: "Careers",
+        link: "/careers",
+    },
+    {
+        name: "Contact",
+        link: "/contact",
+    },
+];
+
+export const FooterHelp = [
+    {
+        name: "Customer Support",
+        link: "/support",
+    },
+    {
+        name: "Find a store",
+        link: "/",
+    },
+    {
+        name: "Coupons",
+        link: "/coupons",
+    },
 ]

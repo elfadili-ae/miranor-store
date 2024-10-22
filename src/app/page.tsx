@@ -15,6 +15,10 @@ const HomePage = () => {
         <h2 className="text-2xl lg:text-3xl mt-10 mb-2">Shop By Categories</h2>
       </PaddingWrapper>
       <CategoryList />
+      <PaddingWrapper>
+        <h2 className="text-2xl lg:text-3xl mt-10 mb-2">New Products</h2>
+      </PaddingWrapper>
+      <ProductsList />
     </div>
   );
 };
