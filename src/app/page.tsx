@@ -5,7 +5,7 @@ import Slider from "@/components/Slider";
 
 const HomePage = () => {
   return (
-    <div className="w-full flex flex-col">
+    <div className="relative z-0 w-full flex flex-col">
       <Slider />
       <PaddingWrapper>
         <h2 className="text-2xl lg:text-3xl mt-10 mb-2">Featured Products</h2>

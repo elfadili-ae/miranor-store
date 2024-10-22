@@ -9,7 +9,7 @@ import { MenuLinks } from "@/constants/constants";
 
 const Navbar = () => {
   return (
-    <div className="h-20 px-4 md:px-8 lg:px-16 flex justify-between items-center drop-shadow-md bg-white">
+    <div className="relative z-40 h-20 px-4 md:px-8 lg:px-16 flex justify-between items-center drop-shadow-md bg-white">
       {/* mobile */}
       <div className="w-full h-full flex justify-between items-center sm:hidden">
         <Logo />
