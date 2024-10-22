@@ -138,7 +138,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="py-6 text-sm text-center text-gray-600">
+      <div className="py-6 text-sm text-center text-gray-400">
         © 2024 Miranor Store. All rights reserved.
       </div>
     </footer>
