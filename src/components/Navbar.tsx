@@ -1,15 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
 import Menu from "./Menu";
-import Image from "next/image";
 import SearchBar from "./SearchBar";
 import NavIcons from "./NavIcons";
 import Logo from "./Logo";
-import { MenuLinks } from "@/constants/constants";
+import { MenuLinks, NoFooterNavLinks } from "@/constants/constants";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
+  const pathname = usePathname();
+
   return (
-    <div className="relative z-40 h-20 px-4 md:px-8 lg:px-16 flex justify-between items-center drop-shadow-md bg-white">
+    <div
+      className={`${
+        NoFooterNavLinks.includes(pathname) && "hidden"
+      } relative z-40 h-20 px-4 md:px-8 lg:px-16 flex justify-between items-center drop-shadow-md bg-white`}
+    >
       {/* mobile */}
       <div className="w-full h-full flex justify-between items-center sm:hidden">
         <Logo />

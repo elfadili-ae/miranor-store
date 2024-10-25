@@ -119,3 +119,8 @@ export const FooterHelp = [
         link: "/coupons",
     },
 ]
+
+export const NoFooterNavLinks = [
+    '/login',
+    '/register'
+]
