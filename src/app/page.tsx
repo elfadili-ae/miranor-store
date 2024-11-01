@@ -1,6 +1,7 @@
 import CategoryList from "@/components/CategoryList";
 import PaddingWrapper from "@/components/PaddingWrapper";
 import ProductsList from "@/components/ProductsList";
+import { Skeleton } from "@/components/Skeleton";
 import Slider from "@/components/Slider";
 import { WixClientServer } from "@/lib/WixClientServer";
 import React from "react";
@@ -16,7 +17,7 @@ const HomePage = async () => {
       <PaddingWrapper>
         <h2 className="text-2xl lg:text-3xl mt-10 mb-2">Featured Products</h2>
       </PaddingWrapper>
-      <React.Suspense>
+      <React.Suspense fallback={<Skeleton />}>
         <ProductsList
           categoryID={process.env.FEATURED_PRODUCTS_CATEGORY_ID!}
           limit={4}
@@ -25,15 +26,19 @@ const HomePage = async () => {
       <PaddingWrapper>
         <h2 className="text-2xl lg:text-3xl mt-10 mb-2">Shop By Categories</h2>
       </PaddingWrapper>
-      <CategoryList categories={response.items} />
+      <React.Suspense fallback={<Skeleton />}>
+        <CategoryList categories={response.items} />
+      </React.Suspense>
       <PaddingWrapper>
         <h2 className="text-2xl lg:text-3xl mt-10 mb-2">New Products</h2>
       </PaddingWrapper>
-      <ProductsList
-        categoryID={process.env.ALL_PRODUCTS_CATEGORY_ID!}
-        limit={8}
-        latest={true}
-      />
+      <React.Suspense fallback={<Skeleton />}>
+        <ProductsList
+          categoryID={process.env.ALL_PRODUCTS_CATEGORY_ID!}
+          limit={8}
+          latest={true}
+        />
+      </React.Suspense>
     </div>
   );
 };
