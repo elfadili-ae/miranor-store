@@ -4,8 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { collections } from "@wix/stores";
 
-const CategoryList = () => {
+const CategoryList = ({
+  categories,
+}: {
+  categories: collections.Collection[];
+}) => {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const scrollAnimation = useRef<gsap.core.Tween | null>(null);
 
@@ -55,111 +60,27 @@ const CategoryList = () => {
       onMouseLeave={handleResumeAnimation}
     >
       <div className="flex w-full gap-2 md:gap-6">
-        <Link
-          href="/products"
-          className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="product name"
-            fill
-            sizes="25vw"
-            className="object-cover rounded-md"
-          />
-          <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
-            Woman
-          </div>
-        </Link>
-        <Link
-          href="/products"
-          className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="product name"
-            fill
-            sizes="25vw"
-            className="object-cover rounded-md"
-          />
-          <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
-            Woman
-          </div>
-        </Link>
-        <Link
-          href="/products"
-          className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="product name"
-            fill
-            sizes="25vw"
-            className="object-cover rounded-md"
-          />
-          <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
-            Woman
-          </div>
-        </Link>
-        <Link
-          href="/products"
-          className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="product name"
-            fill
-            sizes="25vw"
-            className="object-cover rounded-md"
-          />
-          <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
-            Bags
-          </div>
-        </Link>
-        <Link
-          href="/products"
-          className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="product name"
-            fill
-            sizes="25vw"
-            className="object-cover rounded-md"
-          />
-          <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
-            Accessories
-          </div>
-        </Link>
-        <Link
-          href="/products"
-          className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="product name"
-            fill
-            sizes="25vw"
-            className="object-cover rounded-md"
-          />
-          <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
-            Kids
-          </div>
-        </Link>
-        <Link
-          href="/products"
-          className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
-        >
-          <Image
-            src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="product name"
-            fill
-            sizes="25vw"
-            className="object-cover rounded-md"
-          />
-          <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
-            Man
-          </div>
-        </Link>
+        {categories.map((cat: collections.Collection) => {
+          if (["Featured", "All Products"].includes(cat.name!)) return;
+          return (
+            <Link
+              key={cat._id}
+              href={`/products?cat=${cat.slug}`}
+              className="relative h-60 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6 group flex-shrink-0"
+            >
+              <Image
+                src={cat.media?.mainMedia?.image?.url || "/product.png"}
+                alt={`${cat.slug} category`}
+                fill
+                sizes="25vw"
+                className="object-cover rounded-md"
+              />
+              <div className="absolute bottom-0 left-0 py-1 text-center text-white bg-black w-full group-hover:bottom-1/2 transition-all ease-in-out duration-500">
+                {cat.name}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

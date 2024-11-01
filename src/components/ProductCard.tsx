@@ -1,12 +1,17 @@
+"use client";
+import { products } from "@wix/stores";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import DOMPurify from "isomorphic-dompurify";
 
 type ProductCardTypes = {
   name: string;
   description: string;
   link: string;
   price: number;
+  currency: string;
+  media: products.Media;
 };
 
 const ProductCard: React.FC<ProductCardTypes> = ({
@@ -14,7 +19,15 @@ const ProductCard: React.FC<ProductCardTypes> = ({
   description,
   link,
   price,
+  currency,
+  media,
 }) => {
+  const [sanitizedDescription, setSanitizedDescription] = useState("");
+
+  useEffect(() => {
+    setSanitizedDescription(DOMPurify.sanitize(description));
+  }, [description]);
+
   return (
     <Link
       href={link}
@@ -22,14 +35,16 @@ const ProductCard: React.FC<ProductCardTypes> = ({
     >
       <div className="relative w-full h-72 group">
         <Image
-          src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src={media.mainMedia?.image?.url || "/product.png"}
           alt="product name"
           fill
           sizes="25vw"
           className="object-cover "
         />
         <Image
-          src="https://images.unsplash.com/photo-1518527399940-f3f768f47dd2?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src={
+            media.items ? (media.items[1].image?.url as string) : "/product.png"
+          }
           alt="product name"
           fill
           sizes="25vw"
@@ -37,14 +52,19 @@ const ProductCard: React.FC<ProductCardTypes> = ({
         />
       </div>
       <h3 className="font-bold text-center">{name}</h3>
-      <p className="text-sm text-center px-2">{description}</p>
+      <p
+        className="text-sm text-center px-2"
+        dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+      />
       <div className="flex justify-center gap-3">
         <div className="w-5 h-5 rounded-full bg-red-600 border-[1px] border-black"></div>
         <div className="w-5 h-5 rounded-full bg-blue-600 border-[1px] border-black"></div>
         <div className="w-5 h-5 rounded-full bg-white-600 border-[1px] border-black"></div>
       </div>
       <div className="flex justify-between items-center pt-2 pb-4 px-2">
-        <h3 className="text-xl font-semibold">${price}</h3>
+        <h3 className="text-xl font-semibold">
+          {currency} {price}
+        </h3>
         <div className="px-8 sm:px-4 py-2 rounded-md bg-black text-white">
           Add to cart
         </div>
