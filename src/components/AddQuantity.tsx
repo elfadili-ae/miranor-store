@@ -1,12 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const AddQuantity = () => {
+const AddQuantity = ({
+  productID,
+  variantID,
+  stock,
+}: {
+  productID: string;
+  variantID: string;
+  stock: number;
+}) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddQuantity = () => {
-    setQuantity((prev) => prev + 1);
+    if (quantity < stock) setQuantity((prev) => prev + 1);
   };
 
   const handleReduceQuantity = () => {
@@ -14,9 +22,15 @@ const AddQuantity = () => {
       setQuantity((prev) => prev - 1);
     }
   };
+  useEffect(() => {
+    if (quantity > stock) {
+      setQuantity(1);
+    }
+  }, [variantID]);
+
   return (
     <div className="w-full flex flex-col">
-      <h3 className="text-lg font-semibold">Choose a size:</h3>
+      <h3 className="text-lg font-semibold">Choose quantity:</h3>
       <div className="flex flex-col sm:flex-row sm:justify-between">
         <div className="inline-flex items-center mt-2">
           <button
@@ -60,9 +74,13 @@ const AddQuantity = () => {
               />
             </svg>
           </button>
-          <p className="ml-2">
-            Only <span className="text-red-500">33 items</span> left
-          </p>
+          {stock > 0 ? (
+            <p className="ml-2">
+              Only <span className="text-red-500">{stock} items</span> left
+            </p>
+          ) : (
+            <p className="ml-2 text-red-500">Out of stock</p>
+          )}
         </div>
 
         <button className="h-max py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 mt-4 flex items-center justify-center">
