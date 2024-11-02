@@ -2,6 +2,7 @@ import React from "react";
 import ProductCard from "./ProductCard";
 import { WixClientServer } from "@/lib/WixClientServer";
 import { products } from "@wix/stores";
+import Pagination from "./Pagination";
 
 const ProductsList = async ({
   categoryID,
@@ -22,6 +23,7 @@ const ProductsList = async ({
     .ge("priceData.price", searchParams?.min || 0)
     .lt("priceData.price", searchParams?.max || 99999)
     .startsWith("name", searchParams?.name || "")
+    .skip(searchParams?.page ? parseInt(searchParams.page) * limit : 0)
     .limit(limit);
 
   if (searchParams?.sortby) {
@@ -57,6 +59,11 @@ const ProductsList = async ({
           />
         );
       })}
+      <Pagination
+        currentPage={response.currentPage!}
+        hasNext={response.hasNext()}
+        hasPrev={response.hasPrev()}
+      />
     </div>
   );
 };
