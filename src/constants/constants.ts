@@ -122,5 +122,6 @@ export const FooterHelp = [
 
 export const NoFooterNavLinks = [
     '/login',
-    '/register'
+    '/register',
+    '/email-verification',
 ]

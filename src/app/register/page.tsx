@@ -1,15 +1,86 @@
+"use client";
+
 import Logo from "@/components/Logo";
+import { useWixClient } from "@/hooks/useWixClient";
+import { LoginState } from "@wix/sdk";
 import Image from "next/image";
-import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const page = () => {
+  const wixClient = useWixClient();
+  const route = useRouter();
+
+  const isLoggedIn = wixClient.auth.loggedIn();
+
+  if (isLoggedIn) {
+    route.push("/");
+  }
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const validateData = () => {
+    if (username === "") {
+      setError("Username is missing!");
+    } else if (username.length <= 3) {
+      setError("Username must be more than 3 characters!");
+    } else if (email === "") {
+      setError("Email is missing!");
+    } else if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
+      setError("Email format is invalid!");
+    } else if (password === "") {
+      setError("Password is missing!");
+    } else if (password.length <= 5) {
+      setError("Password must be more than 5 characters!");
+    } else {
+      return true;
+    }
+    return false;
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const isValid = validateData();
+
+    if (!isValid) return;
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const registerResult = await wixClient.auth.register({
+        email,
+        password,
+        profile: { nickname: username },
+      });
+      const status = registerResult?.loginState;
+
+      switch (status) {
+        case LoginState.EMAIL_VERIFICATION_REQUIRED:
+          route.push("/email-verification");
+          break;
+        case LoginState.FAILURE:
+          const err = JSON.parse(registerResult.error || "{}");
+          setError(err.message ? err.message : "Something went wrong");
+          break;
+      }
+    } catch (error) {
+      setError("Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="h-screen md:flex">
-      <div className="relative flex h-full md:w-1/2 justify-center py-10 items-center bg-white">
+      <div className="relative flex flex-col h-full md:w-1/2 justify-center py-10 items-center bg-white">
         <div className="absolute pl-4 pt-3 top-0 left-0 w-full flex md:hidden">
           <Logo />
         </div>
-        <form className="bg-white">
+        <form className="bg-white" onSubmit={handleFormSubmit}>
           <h1 className="text-gray-800 font-bold text-2xl mb-1">
             Hello there!
           </h1>
@@ -33,9 +104,14 @@ const page = () => {
             <input
               className="pl-2 outline-none border-none"
               type="text"
-              name=""
-              id=""
+              name="username"
+              id="username"
               placeholder="Username"
+              autoComplete="username"
+              required
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
             />
           </div>
           <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
@@ -56,9 +132,14 @@ const page = () => {
             <input
               className="pl-2 outline-none border-none"
               type="text"
-              name=""
-              id=""
+              name="email"
+              id="email"
               placeholder="Email Address"
+              autoComplete="email"
+              required
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
             />
           </div>
           <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
@@ -76,22 +157,33 @@ const page = () => {
             </svg>
             <input
               className="pl-2 outline-none border-none"
-              type="text"
-              name=""
-              id=""
+              type="password"
+              name="password"
+              id="password"
               placeholder="Password"
+              autoComplete="current-password"
+              required
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
           </div>
+
           <button
             type="submit"
-            className="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
+            disabled={isLoading}
+            className="block w-full bg-indigo-600 disabled:bg-indigo-400 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
           >
-            Register
+            {isLoading ? "Loading" : "Register"}
           </button>
-          <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
-            You already have an account ?
-          </span>
         </form>
+        {error !== "" && <p className="text-red-500 text-sm">{error}</p>}
+        <Link
+          href="/login"
+          className="text-sm ml-2 hover:text-blue-500 cursor-pointer"
+        >
+          You already have an account ?
+        </Link>
       </div>
       <div className="relative overflow-hidden w-1/2 md:flex hidden">
         <div className="absolute w-full h-full z-[1] flex flex-col items-center justify-center">
