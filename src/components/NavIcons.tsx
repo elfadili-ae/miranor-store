@@ -24,7 +24,7 @@ const NavIcons = () => {
 
   const login = async () => {
     const loginRequestData = wixClient.auth.generateOAuthData(
-      "http://localhost:3000/"
+      `${window.location.origin}`
     );
 
     localStorage.setItem("oAuthRedirectData", JSON.stringify(loginRequestData));
