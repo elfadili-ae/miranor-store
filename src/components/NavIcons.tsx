@@ -5,26 +5,41 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import CartModal from "./CartModal";
+import { useWixClient } from "@/hooks/useWixClient";
 
 const NavIcons = () => {
+  const wixClient = useWixClient();
+
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const [openCart, setOpenCart] = useState(false);
 
   const router = useRouter();
 
-  const isLoggedIn = false;
-
-  const handleProfileIcon = () => {
-    if (!isLoggedIn) {
-      router.push("/login");
-    }
-    setOpenCart(false);
-    setOpenProfileMenu((prev) => !prev);
-  };
+  const isLoggedIn = wixClient.auth.loggedIn();
 
   const handleCartIcon = () => {
     setOpenProfileMenu(false);
     setOpenCart((prev) => !prev);
+  };
+
+  const login = async () => {
+    const loginRequestData = wixClient.auth.generateOAuthData(
+      "http://localhost:3000/"
+    );
+
+    localStorage.setItem("oAuthRedirectData", JSON.stringify(loginRequestData));
+    const { authUrl } = await wixClient.auth.getAuthUrl(loginRequestData);
+    window.location.href = authUrl;
+  };
+
+  const handleProfileIcon = () => {
+    console.log("isLoggedIn", isLoggedIn);
+    if (!isLoggedIn) {
+      login();
+      return;
+    }
+    setOpenCart(false);
+    setOpenProfileMenu((prev) => !prev);
   };
 
   return (
@@ -40,7 +55,7 @@ const NavIcons = () => {
         }, [])}
       />
       {openProfileMenu && (
-        <div className="absolute top-8 right-0 w-32 flex flex-col gap-3 py-4 rounded-md bg-black drop-shadow-lg">
+        <div className="absolute z-50 top-8 right-0 w-32 flex flex-col gap-3 py-4 rounded-md bg-black drop-shadow-lg">
           <Link
             href="/profile"
             className="text-white hover:bg-white hover:text-black pl-4"
