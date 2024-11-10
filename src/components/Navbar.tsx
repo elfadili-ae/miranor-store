@@ -4,10 +4,12 @@ import Link from "next/link";
 import React from "react";
 import Menu from "./Menu";
 import SearchBar from "./SearchBar";
-import NavIcons from "./NavIcons";
 import Logo from "./Logo";
 import { MenuLinks, NoFooterNavLinks } from "@/constants/constants";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const NavIcons = dynamic(() => import("./NavIcons"), { ssr: false });
 
 const Navbar = () => {
   const pathname = usePathname();

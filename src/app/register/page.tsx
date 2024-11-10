@@ -57,14 +57,33 @@ const page = () => {
         profile: { nickname: username },
       });
       const status = registerResult?.loginState;
-
+      console.log(registerResult);
       switch (status) {
         case LoginState.EMAIL_VERIFICATION_REQUIRED:
           route.push("/email-verification");
           break;
         case LoginState.FAILURE:
-          const err = JSON.parse(registerResult.error || "{}");
-          setError(err.message ? err.message : "Something went wrong");
+          if (registerResult.errorCode) {
+            switch (registerResult.errorCode) {
+              case "emailAlreadyExists":
+                setError("This email address is already registered.");
+                break;
+              case "invalidEmail":
+                setError("The email address entered is invalid.");
+                break;
+              case "invalidPassword":
+                setError("The password entered is invalid.");
+                break;
+              default:
+                setError(
+                  "An unexpected error occurred. Please try again later."
+                );
+                break;
+            }
+          } else {
+            const err = JSON.parse(registerResult.error || "{}");
+            setError(err.message ? err.message : "Something went wrong");
+          }
           break;
       }
     } catch (error) {
@@ -182,7 +201,7 @@ const page = () => {
           href="/login"
           className="text-sm ml-2 hover:text-blue-500 cursor-pointer"
         >
-          You already have an account ?
+          You already have an account? Login.
         </Link>
       </div>
       <div className="relative overflow-hidden w-1/2 md:flex hidden">

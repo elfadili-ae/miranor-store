@@ -1,8 +1,79 @@
+"use client";
+
 import Logo from "@/components/Logo";
+import { useWixClient } from "@/hooks/useWixClient";
+import { LoginState } from "@wix/sdk";
 import Image from "next/image";
-import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 const Login = () => {
+  const wixClient = useWixClient();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const route = useRouter();
+
+  const handleSubmitForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    try {
+      const loginResult = await wixClient.auth.login({
+        email,
+        password,
+      });
+      console.log(loginResult);
+      const status = loginResult?.loginState;
+      switch (status) {
+        case LoginState.EMAIL_VERIFICATION_REQUIRED:
+          route.push("/email-verification");
+          break;
+        case LoginState.FAILURE:
+          if (loginResult.errorCode) {
+            switch (loginResult.errorCode) {
+              case "invalidEmail":
+                setError("This email is not registred.");
+                break;
+              case "invalidPassword":
+                setError("The password entered is not correct.");
+                break;
+              case "resetPassword":
+                setError("You need to reset the password.");
+                break;
+              default:
+                setError("Something went wrong. Try again later");
+                break;
+            }
+          } else {
+            setError("Something went wrong. Try again later");
+          }
+          break;
+        case LoginState.SUCCESS:
+          const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
+            loginResult.data.sessionToken!
+          );
+
+          Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
+            expires: 2,
+          });
+          wixClient.auth.setTokens(tokens);
+          route.push("/");
+          break;
+        default:
+          setError("Something went wrong. Try again later");
+          break;
+      }
+    } catch (error) {
+      setError("Something went wrong. Try again later");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="h-screen md:flex">
       <div className="relative overflow-hidden w-1/2 md:flex hidden">
@@ -31,7 +102,7 @@ const Login = () => {
         <div className="absolute pl-4 pt-3 top-0 left-0 w-full flex md:hidden">
           <Logo />
         </div>
-        <form className="bg-white">
+        <form className="bg-white" onSubmit={handleSubmitForm}>
           <h1 className="text-gray-800 font-bold text-2xl mb-1">
             Hello Again!
           </h1>
@@ -49,15 +120,20 @@ const Login = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
+                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
               />
             </svg>
             <input
               className="pl-2 outline-none border-none"
-              type="text"
-              name=""
-              id=""
-              placeholder="Username"
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email Address"
+              autoComplete="email"
+              required
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
             />
           </div>
 
@@ -76,21 +152,37 @@ const Login = () => {
             </svg>
             <input
               className="pl-2 outline-none border-none"
-              type="text"
-              name=""
-              id=""
+              autoComplete="current-password"
+              type="password"
+              name="password"
+              id="password"
               placeholder="Password"
+              required
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
           </div>
-          <button
-            type="submit"
-            className="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
-          >
-            Login
-          </button>
+
           <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
             Forgot Password ?
           </span>
+          <button
+            type="submit"
+            className={`block w-full ${
+              isLoading ? "bg-indigo-400" : "bg-indigo-600"
+            } mt-4 py-2 rounded-2xl text-white font-semibold mb-2`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading" : "Login"}
+          </button>
+          {error !== "" && <p className="text-red-500 text-sm">{error}</p>}
+          <Link
+            href="/register"
+            className="text-sm ml-2 hover:text-blue-500 cursor-pointer"
+          >
+            You don't have an account? Register.
+          </Link>
         </form>
       </div>
     </div>

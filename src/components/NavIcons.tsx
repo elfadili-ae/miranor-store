@@ -2,24 +2,34 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import CartModal from "./CartModal";
+import { useWixClient } from "@/hooks/useWixClient";
+import Cookies from "js-cookie";
 
 const NavIcons = () => {
+  const wixClient = useWixClient();
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const [openCart, setOpenCart] = useState(false);
 
   const router = useRouter();
 
-  const isLoggedIn = false;
+  const isLoggedIn = wixClient.auth.loggedIn();
 
   const handleProfileIcon = () => {
     if (!isLoggedIn) {
       router.push("/login");
+    } else {
+      setOpenCart(false);
+      setOpenProfileMenu((prev) => !prev);
     }
-    setOpenCart(false);
-    setOpenProfileMenu((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+    Cookies.remove("refreshToken");
+    const { logoutUrl } = await wixClient.auth.logout(window.location.href);
+    router.push(logoutUrl);
   };
 
   const handleCartIcon = () => {
@@ -47,12 +57,14 @@ const NavIcons = () => {
           >
             Profile
           </Link>
-          <Link
-            href="/logout"
+          <div
+            onClick={() => {
+              handleLogout();
+            }}
             className="text-white hover:bg-white hover:text-black pl-4"
           >
             Logout
-          </Link>
+          </div>
         </div>
       )}
       <Image

@@ -2,6 +2,7 @@
 
 import Logo from "@/components/Logo";
 import { useWixClient } from "@/hooks/useWixClient";
+import { LoginState } from "@wix/sdk";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -9,7 +10,6 @@ const page = () => {
   const wixClient = useWixClient();
   const route = useRouter();
 
-  const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,14 +20,22 @@ const page = () => {
     setError("");
 
     try {
+      console.log(code);
       const verificationResult = await wixClient.auth.processVerification({
         verificationCode: code,
       });
       console.log(verificationResult);
       if (verificationResult.loginState) {
-        setError("Something went wrong, try again later.");
+        switch (verificationResult.loginState) {
+          case LoginState.SUCCESS:
+            route.push("/login");
+            break;
+          default:
+            setError("Something went wrong, try again later.");
+            break;
+        }
       } else {
-        route.push("/login");
+        setError("Something went wrong, try again later.");
       }
     } catch (error) {
       setError("Something went wrong, try again later.");
@@ -37,7 +45,7 @@ const page = () => {
   };
 
   return (
-    <div className="h-screen w-full relative flex justify-center py-10 items-center bg-white">
+    <div className="h-screen w-full relative flex flex-col justify-center py-10 items-center bg-white">
       <div className="absolute pl-4 pt-3 top-0 left-0 w-full flex">
         <Logo />
       </div>
@@ -48,33 +56,7 @@ const page = () => {
         <p className="text-sm font-normal text-gray-600 mb-7">
           Enter the code we sent to your email.
         </p>
-        <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-            />
-          </svg>
-          <input
-            className="pl-2 outline-none border-none"
-            type="text"
-            name="email"
-            id="email"
-            placeholder="Email Address"
-            autoComplete="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-        </div>
+
         <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
           <svg className="w-5 h-5 text-gray-400" viewBox="0 0 16 16">
             <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
