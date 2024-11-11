@@ -1,5 +1,7 @@
 "use client";
 
+import { useStore } from "@/hooks/useCartStore";
+import { useWixClient } from "@/hooks/useWixClient";
 import React, { useState, useEffect } from "react";
 
 const AddQuantity = ({
@@ -11,7 +13,9 @@ const AddQuantity = ({
   variantID: string;
   stock: number;
 }) => {
+  const wixClient = useWixClient();
   const [quantity, setQuantity] = useState(1);
+  const { addItem } = useStore();
 
   const handleAddQuantity = () => {
     if (quantity < stock) setQuantity((prev) => prev + 1);
@@ -22,6 +26,22 @@ const AddQuantity = ({
       setQuantity((prev) => prev - 1);
     }
   };
+
+  // const addToCart = async () => {
+  //   const response = await wixClient.currentCart.addToCurrentCart({
+  //     lineItems: [
+  //       {
+  //         catalogReference: {
+  //           appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
+  //           catalogItemId: productID,
+  //           ...(variantID && { options: { variantId: variantID } }),
+  //         },
+  //         quantity: quantity,
+  //       },
+  //     ],
+  //   });
+  // };
+
   useEffect(() => {
     if (quantity > stock) {
       setQuantity(1);
@@ -83,7 +103,12 @@ const AddQuantity = ({
           )}
         </div>
 
-        <button className="h-max py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 mt-4 flex items-center justify-center">
+        <button
+          onClick={() => {
+            addItem(wixClient, productID, quantity, variantID);
+          }}
+          className="h-max py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 mt-4 flex items-center justify-center"
+        >
           Add to cart
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CartModal from "./CartModal";
 import { useWixClient } from "@/hooks/useWixClient";
 import Cookies from "js-cookie";
+import { useStore } from "@/hooks/useCartStore";
 
 const NavIcons = () => {
   const wixClient = useWixClient();
@@ -25,6 +26,12 @@ const NavIcons = () => {
       setOpenProfileMenu((prev) => !prev);
     }
   };
+
+  const { counter, getCart } = useStore();
+
+  useEffect(() => {
+    getCart(wixClient);
+  }, [wixClient, getCart]);
 
   const handleLogout = async () => {
     Cookies.remove("refreshToken");
@@ -87,9 +94,11 @@ const NavIcons = () => {
           height={28}
           className="cursor-pointer"
         />
-        <div className="absolute w-5 aspect-square -top-2 -right-3 rounded-full bg-redish text-sm text-white text-center">
-          2
-        </div>
+        {counter > 0 && (
+          <div className="absolute w-5 aspect-square -top-2 -right-3 rounded-full bg-redish text-sm text-white text-center">
+            {counter}
+          </div>
+        )}
       </div>
 
       {openCart && <CartModal />}
