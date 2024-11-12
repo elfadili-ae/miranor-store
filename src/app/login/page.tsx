@@ -187,7 +187,7 @@ const Login = () => {
             href="/register"
             className="text-sm ml-2 hover:text-blue-500 cursor-pointer"
           >
-            You don't have an account? Register.
+            You don&apos;t have an account? Register.
           </Link>
         </form>
       </div>
