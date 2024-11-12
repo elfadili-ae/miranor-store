@@ -6,7 +6,7 @@ import { LoginState } from "@wix/sdk";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const page = () => {
+const Page = () => {
   const wixClient = useWixClient();
   const route = useRouter();
 
@@ -103,4 +103,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
