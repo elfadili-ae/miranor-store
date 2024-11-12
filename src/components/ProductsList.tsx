@@ -9,11 +9,13 @@ const ProductsList = async ({
   limit = 20,
   latest = false,
   searchParams,
+  pages = true,
 }: {
   categoryID: string;
   limit?: number;
   latest?: boolean;
   searchParams?: any;
+  pages?: boolean;
 }) => {
   const wixClient = await WixClientServer();
 
@@ -59,11 +61,13 @@ const ProductsList = async ({
           />
         );
       })}
-      <Pagination
-        currentPage={response.currentPage!}
-        hasNext={response.hasNext()}
-        hasPrev={response.hasPrev()}
-      />
+      {pages && (
+        <Pagination
+          currentPage={response.currentPage!}
+          hasNext={response.hasNext()}
+          hasPrev={response.hasPrev()}
+        />
+      )}
     </div>
   );
 };

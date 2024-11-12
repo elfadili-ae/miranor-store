@@ -21,6 +21,7 @@ const HomePage = async () => {
         <ProductsList
           categoryID={process.env.FEATURED_PRODUCTS_CATEGORY_ID!}
           limit={4}
+          pages={false}
         />
       </React.Suspense>
       <PaddingWrapper>
@@ -37,6 +38,7 @@ const HomePage = async () => {
           categoryID={process.env.ALL_PRODUCTS_CATEGORY_ID!}
           limit={8}
           latest={true}
+          pages={false}
         />
       </React.Suspense>
     </div>
