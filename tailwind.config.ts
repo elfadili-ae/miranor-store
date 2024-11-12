@@ -24,6 +24,7 @@ const config: Config = {
     "bg-orange-100",
     "to-blue-300",
     "bg-gradient-to-r",
+    "bg-yellow-200",
   ],
   plugins: [],
 };

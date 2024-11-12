@@ -65,6 +65,14 @@ export const slides = [
         url: "/",
         bg: "bg-orange-100",
     },
+    {
+        id: 3,
+        title: "Summer Collection Launch",
+        description: "Discover our latest trends and get 30% off your first purchase.",
+        img: "https://images.unsplash.com/photo-1481016570479-9eab6349fde7?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        url: "/summer-collection",
+        bg: "bg-yellow-200",
+    },
 ];
 
 export const FooterCategories = [
