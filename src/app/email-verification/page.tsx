@@ -10,6 +10,12 @@ const page = () => {
   const wixClient = useWixClient();
   const route = useRouter();
 
+  const isLoggedIn = wixClient.auth.loggedIn();
+
+  if (isLoggedIn) {
+    route.push("/");
+  }
+
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);

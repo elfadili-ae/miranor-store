@@ -1,9 +1,21 @@
 import { OAuthStrategy, createClient } from "@wix/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { WixClientServer } from "./lib/WixClientServer";
 
 export const middleware = async (request: NextRequest) => {
     const cookies = request.cookies;
     const response = NextResponse.next();
+    const wixClient = WixClientServer();
+
+    if ((await wixClient).auth.loggedIn()) {
+        const { pathname } = request.nextUrl;
+        const redirectPaths = ['/login', '/register', '/email-verification'];
+
+        if (redirectPaths.includes(pathname)) {
+            const redirectUrl = new URL('/', request.url);
+            return NextResponse.redirect(redirectUrl);
+        }
+    }
 
     if (cookies.has("refreshToken")) {
         return;

@@ -17,6 +17,12 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const route = useRouter();
 
+  const isLoggedIn = wixClient.auth.loggedIn();
+
+  if (isLoggedIn) {
+    route.push("/");
+  }
+
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
