@@ -12,11 +12,17 @@ import React from "react";
 import DOMPurify from "isomorphic-dompurify";
 import SafeParagraph from "@/components/SafeParagraph";
 
+type ContextType = {
+  params: {
+    productID: string;
+  };
+};
+
 interface ProductParams extends ParsedUrlQuery {
   productID: string;
 }
 
-const ProductPage = async (context: GetServerSidePropsContext) => {
+const ProductPage = async (context: ContextType) => {
   const { productID } = context.params as ProductParams;
 
   const wixClient = await WixClientServer();
