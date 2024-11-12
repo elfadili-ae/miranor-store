@@ -1,12 +1,29 @@
 "use client";
 
 import { MenuLinks } from "@/constants/constants";
+import { useWixClient } from "@/hooks/useWixClient";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const Menu = () => {
+  const wixClient = useWixClient();
   const [isMenu, setIsMenu] = useState(false);
+  const router = useRouter();
+
+  const isLoggedIn = wixClient.auth.loggedIn();
+
+  const handleLogout = async () => {
+    Cookies.remove("refreshToken");
+    const { logoutUrl } = await wixClient.auth.logout(window.location.href);
+    router.push(logoutUrl);
+  };
+
+  const hideMenu = () => {
+    setIsMenu(false);
+  };
 
   return (
     <div className="sm:hidden ">
@@ -25,11 +42,36 @@ const Menu = () => {
         <div className="w-fdivl h-full flex flex-col gap-4 text-xl justify-center items-center">
           {MenuLinks.map((item: { name: string; href: string }) => {
             return (
-              <Link href={item.href} key={item.name}>
+              <Link
+                href={item.href}
+                key={item.name}
+                onClick={() => {
+                  hideMenu();
+                }}
+              >
                 {item.name}
               </Link>
             );
           })}
+          {isLoggedIn ? (
+            <button
+              onClick={() => {
+                hideMenu();
+                handleLogout();
+              }}
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => {
+                hideMenu();
+              }}
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </div>

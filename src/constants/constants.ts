@@ -32,11 +32,6 @@ export const MenuLinks: MenuLinksType = [
         name: 'Cart',
         href: '/cart',
     },
-    {
-        isNavLink: false,
-        name: 'Logout',
-        href: '/logout',
-    },
 ]
 
 export const slides = [
