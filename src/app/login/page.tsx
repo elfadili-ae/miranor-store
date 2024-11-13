@@ -6,22 +6,25 @@ import { LoginState } from "@wix/sdk";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 const Login = () => {
+  const route = useRouter();
   const wixClient = useWixClient();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const route = useRouter();
 
   const isLoggedIn = wixClient.auth.loggedIn();
 
-  if (isLoggedIn) {
-    route.push("/");
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      route.push("/");
+    }
+  }, [isLoggedIn, route]);
 
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +35,6 @@ const Login = () => {
         email,
         password,
       });
-      console.log(loginResult);
       const status = loginResult?.loginState;
       switch (status) {
         case LoginState.EMAIL_VERIFICATION_REQUIRED:
