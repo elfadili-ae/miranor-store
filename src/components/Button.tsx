@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
 
@@ -5,13 +7,16 @@ const Button = ({
   name,
   link,
   dark = false,
+  onClick = () => {},
 }: {
   name: string;
   link: string;
   dark?: boolean;
+  onClick?: () => void;
 }) => {
   return (
     <Link
+      onClick={onClick}
       href={link}
       className={`${
         dark ? "text-white bg-black border-black" : "text-black bg-white"

@@ -101,7 +101,13 @@ const NavIcons = () => {
         )}
       </div>
 
-      {openCart && <CartModal />}
+      {openCart && (
+        <CartModal
+          hideCart={() => {
+            setOpenCart(false);
+          }}
+        />
+      )}
     </div>
   );
 };

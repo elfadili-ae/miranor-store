@@ -8,7 +8,7 @@ import { useStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
 
-const CartModal = () => {
+const CartModal = ({ hideCart }: { hideCart: () => void }) => {
   const wixClient = useWixClient();
   const { cart, counter, isLoading, removeItem } = useStore();
 
@@ -93,9 +93,9 @@ const CartModal = () => {
           <p className="text-xs text-white pb-2 border-b-2 text-center border-white mb-3">
             Shipping & taxes calculated at checkout
           </p>
-          <div className="w-full flex justify-between px-2">
-            <Button name="View cart" link="/cart" dark />
-            <Button name="Checkout" link="/checkout" />
+          <div className="w-full flex justify-end px-2">
+            {/* <Button onClick={hideCart} name="View cart" link="/cart" dark /> */}
+            <Button onClick={hideCart} name="Checkout" link="/checkout" />
           </div>
         </>
       )}
