@@ -1,15 +1,10 @@
 import AddQuantity from "@/components/AddQuantity";
-import ChooseColor from "@/components/ChooseColor";
-import ChooseSize from "@/components/ChooseSize";
 import CustomizeProduct from "@/components/CustomizeProduct";
 import ProductImages from "@/components/ProductImages";
 import { WixClientServer } from "@/lib/WixClientServer";
-import { products } from "@wix/stores";
-import { GetServerSidePropsContext } from "next";
 import { notFound } from "next/navigation";
 import { ParsedUrlQuery } from "querystring";
 import React from "react";
-import DOMPurify from "isomorphic-dompurify";
 import SafeParagraph from "@/components/SafeParagraph";
 
 type ContextType = {

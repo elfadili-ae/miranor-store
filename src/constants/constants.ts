@@ -30,7 +30,7 @@ export const MenuLinks: MenuLinksType = [
     {
         isNavLink: false,
         name: 'Cart',
-        href: '/cart',
+        href: '/checkout',
     },
 ]
 
