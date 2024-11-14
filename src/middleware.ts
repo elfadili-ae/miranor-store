@@ -9,9 +9,17 @@ export const middleware = async (request: NextRequest) => {
 
     if ((await wixClient).auth.loggedIn()) {
         const { pathname } = request.nextUrl;
-        const redirectPaths = ['/login', '/register', '/email-verification', '/checkout', '/profile'];
+        const redirectPathsLoggedIn = ['/login', '/register', '/email-verification'];
 
-        if (redirectPaths.includes(pathname)) {
+        if (redirectPathsLoggedIn.includes(pathname)) {
+            const redirectUrl = new URL('/', request.url);
+            return NextResponse.redirect(redirectUrl);
+        }
+    } else {
+        const { pathname } = request.nextUrl;
+        const redirectPathsNotLoggedIn = ['/checkout', '/profile', '/orders'];
+
+        if (redirectPathsNotLoggedIn.includes(pathname)) {
             const redirectUrl = new URL('/', request.url);
             return NextResponse.redirect(redirectUrl);
         }
