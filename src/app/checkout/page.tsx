@@ -2,17 +2,58 @@
 
 import { useStore } from "@/hooks/useCartStore";
 import { useWixClient } from "@/hooks/useWixClient";
-7;
 import { media as wixMedia } from "@wix/sdk";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "@/components/CheckoutForm";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 const Page = () => {
   const wixClient = useWixClient();
   const { cart, counter, isLoading, removeItem } = useStore();
+  const [amount, setAmount] = useState<number>();
 
-  console.log("isLoading", isLoading);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [clientSecret, setClientSecret] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [dpmCheckerLink, setDpmCheckerLink] = React.useState("");
+
+  useEffect(() => {
+    //@ts-ignore
+    if (cart?.subtotal.amount) {
+      //@ts-ignore
+      setAmount(Number(cart.subtotal.amount) + 80);
+    }
+    //@ts-ignore
+  }, [cart?.subtotal]);
+
+  useEffect(() => {
+    fetch("/api/create-payment-intent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount: amount }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setClientSecret(data.clientSecret);
+        setDpmCheckerLink(data.dpmCheckerLink);
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
+  }, [cart]);
+
   return (
     <div className="w-full min-h-[calc(100vh-80px)]">
       {isLoading ? (
@@ -30,7 +71,6 @@ const Page = () => {
             <p className="text-gray-400">Check your items and the quantity.</p>
             <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
               {cart.lineItems!.map((item) => {
-                console.log(item);
                 return (
                   <div
                     key={item._id}
@@ -88,45 +128,53 @@ const Page = () => {
             </div>
           </div>
           <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
-            <div className="">
+            <div className="mb-8">
               {/* Total */}
-              <div className="mt-6 border-t border-b py-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-gray-900">Subtotal</p>
+              {amount && (
+                <>
+                  <div className="mt-6 border-t border-b py-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-gray-900">
+                        Subtotal
+                      </p>
 
-                  <p className="font-semibold text-gray-900">
-                    MAD{" "}
-                    {
-                      //@ts-ignore
-                      Number(cart.subtotal.amount).toLocaleString("fr-FR", {
+                      <p className="font-semibold text-gray-900">
+                        MAD{" "}
+                        {amount.toLocaleString("fr-FR", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-gray-900">
+                        Shipping
+                      </p>
+                      <p className="font-semibold text-gray-900">MAD 80.00</p>
+                    </div>
+                  </div>
+                  <div className="mt-6 flex items-center justify-between">
+                    <p className="text-sm font-medium text-gray-900">Total</p>
+                    <p className="text-2xl font-semibold text-gray-900">
+                      MAD{" "}
+                      {amount.toLocaleString("fr-FR", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
-                      })
-                    }
-                  </p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-gray-900">Shipping</p>
-                  <p className="font-semibold text-gray-900">MAD 80.00</p>
-                </div>
-              </div>
-              <div className="mt-6 flex items-center justify-between">
-                <p className="text-sm font-medium text-gray-900">Total</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  MAD{" "}
-                  {
-                    //@ts-ignore
-                    (Number(cart.subtotal.amount) + 80).toLocaleString(
-                      "fr-FR",
-                      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                    )
-                  }
-                </p>
-              </div>
+                      })}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
-            <button className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">
+            {/* <button className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">
               Place Order
-            </button>
+            </button> */}
+            {clientSecret && (
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <CheckoutForm dpmCheckerLink={dpmCheckerLink} />
+              </Elements>
+            )}
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           </div>
         </div>
       )}
