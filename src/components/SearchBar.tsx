@@ -39,7 +39,7 @@ const SearchBar = () => {
         type="submit"
         className="w-6 h-full mr-2 flex justify-center items-center"
       >
-        <Image src="/Search.png" alt="search button" width={20} height={20} />
+        <Image src="/search.png" alt="search button" width={20} height={20} />
       </button>
     </form>
   );
