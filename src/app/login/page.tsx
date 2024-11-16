@@ -69,7 +69,7 @@ const Login = () => {
             expires: 2,
           });
           wixClient.auth.setTokens(tokens);
-          route.push("/");
+          window.location.href = "/";
           break;
         default:
           setError("Something went wrong. Try again later");
