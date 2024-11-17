@@ -3,13 +3,11 @@
 import { useStore } from "@/hooks/useCartStore";
 import { useWixClient } from "@/hooks/useWixClient";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 const Page = () => {
   const { cart, clearCart } = useStore();
   const wixClient = useWixClient();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (cart) {
