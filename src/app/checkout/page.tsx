@@ -22,41 +22,43 @@ const Page = () => {
 
   const [errorMessage, setErrorMessage] = useState<string>();
   const [clientSecret, setClientSecret] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [dpmCheckerLink, setDpmCheckerLink] = React.useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    //@ts-ignore
-    if (cart?.subtotal.amount) {
+    if (cart.lineItems) {
       //@ts-ignore
-      setAmount(Number(cart.subtotal.amount) + 80);
+      if (cart?.subtotal.amount) {
+        //@ts-ignore
+        const totalAmount = Number(cart.subtotal.amount) + 80;
+        setAmount(totalAmount);
+
+        fetch("/api/create-payment-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount: totalAmount }),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            setClientSecret(data.clientSecret);
+          })
+          .catch((error) => {
+            setErrorMessage(error);
+          });
+      }
+      setLoading(isLoading);
+    } else {
+      setLoading(false);
     }
     //@ts-ignore
-  }, [cart?.subtotal]);
-
-  useEffect(() => {
-    fetch("/api/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount: amount }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setClientSecret(data.clientSecret);
-        setDpmCheckerLink(data.dpmCheckerLink);
-      })
-      .catch((error) => {
-        setErrorMessage(error);
-      });
-  }, [cart]);
+  }, [cart?.subtotal, isLoading]);
 
   return (
     <div className="w-full min-h-[calc(100vh-80px)]">
-      {isLoading ? (
+      {loading ? (
         <div className="w-full h-24 flex justify-center items-center">
           <p className="text-xl">Loading...</p>
         </div>
@@ -171,7 +173,7 @@ const Page = () => {
             </button> */}
             {clientSecret && (
               <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm dpmCheckerLink={dpmCheckerLink} />
+                <CheckoutForm />
               </Elements>
             )}
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}

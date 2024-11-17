@@ -1,17 +1,26 @@
 //@ts-nocheck
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 
-export default function CheckoutForm({ dpmCheckerLink }) {
+export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
 
   const [message, setMessage] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [loc, setLoc] = useState();
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      setLoc(window.location.origin);
+    }
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +37,7 @@ export default function CheckoutForm({ dpmCheckerLink }) {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000",
+        return_url: `${loc}/successful-payment`,
       },
     });
 
