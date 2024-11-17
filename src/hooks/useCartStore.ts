@@ -9,6 +9,7 @@ type CartStoreType = {
     getCart: (wixClient: wixClientType) => void,
     addItem: (wixClient: wixClientType, productId: string, quantity: number, variantId?: string) => void,
     removeItem: (wixClient: wixClientType, itemId: string) => void,
+    clearCart: (wixClient: wixClientType) => void,
 }
 
 export const useStore = create<CartStoreType>((set) => ({
@@ -45,5 +46,15 @@ export const useStore = create<CartStoreType>((set) => ({
         set((prev) => ({ ...prev, isLoading: true }));
         const response = await wixClient.currentCart.removeLineItemsFromCurrentCart([itemId]);
         set({ cart: response.cart, counter: response.cart?.lineItems.length, isLoading: false });
+    },
+    clearCart: async (wixClient) => {
+        set(prev => ({ ...prev, isLoading: true }));
+        try {
+            const response = await wixClient.currentCart.deleteCurrentCart();
+            //@ts-ignore
+            set({ cart: [], counter: 0, isLoading: false });
+        } catch (error) {
+
+        }
     }
 }))

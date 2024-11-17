@@ -6,9 +6,16 @@ export const middleware = async (request: NextRequest) => {
     const cookies = request.cookies;
     const response = NextResponse.next();
     const wixClient = WixClientServer();
+    const { pathname } = request.nextUrl;
+
+    if (pathname === "/successful-payment") {
+        if (!request.nextUrl.searchParams.has("payment_intent")) {
+            const redirectUrl = new URL('/', request.url);
+            return NextResponse.redirect(redirectUrl);
+        }
+    }
 
     if ((await wixClient).auth.loggedIn()) {
-        const { pathname } = request.nextUrl;
         const redirectPathsLoggedIn = ['/login', '/register', '/email-verification'];
 
         if (redirectPathsLoggedIn.includes(pathname)) {
